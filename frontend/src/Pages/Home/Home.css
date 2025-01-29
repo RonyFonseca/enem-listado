@@ -1,0 +1,34 @@
+.card-prova {
+    max-width: 500px;
+    margin: 30px;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.13);
+}
+
+.card-links-prova {
+    display: flex;
+    gap: 5px;
+}
+
+.data-lancado {
+    margin-bottom: -2px;
+}
+
+.data-ultilizacao {
+    margin: 0px;
+    margin-top: 5px;
+}
+
+.botton-card {
+    display: flex;
+    justify-content: space-between;
+}
+
+.user-card-bottom {
+    background-color: #FFCA2C;
+    padding-left: 10px;
+    padding-right: 20px;
+    border-radius: 10px;
+}
