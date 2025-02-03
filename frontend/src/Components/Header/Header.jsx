@@ -1,15 +1,22 @@
 import "./Header.css"
-function Header(props){
+import {Link} from "react-router-dom"
+import {Context} from "../../Context/UseContext.jsx"
+import {useContext} from "react"
+function Header(){
+    const {logout, logado} = useContext(Context)
+
     return(
-        <header>
-            <h2>{props.namePage}</h2>
-            <nav>
-                <ul>
-                    <li><a href={props.link1} class="btn btn-success">{props.nome1}</a></li>
-                    <li><a href={props.link2} class="btn btn-warning">{props.nome2}</a></li>
-                </ul>
-            </nav>
-        </header>
+        <div>
+            {logado ? (<header>
+                <h2>Logo</h2>
+                <nav>
+                    <ul>
+                        <li><Link to="/Create" class="btn btn-success">Cria Prova</Link></li>
+                        <li><a onClick={logout} class="btn btn-dark">Logout</a></li>
+                    </ul>
+                </nav>
+            </header>) : (<></>)}
+        </div>
     )
 }
 

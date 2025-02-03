@@ -1,45 +1,40 @@
 import "./Index.css"
-import { useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import axios from "axios"
+import { useState,useContext } from "react"
+import { Link } from "react-router-dom"
+import {Context} from "../../Context/UseContext.jsx"
 function Login(){
-    const InputEmail = useRef("")
-    const InputPassword = useRef("")
 
-    const navigate = useNavigate()
+    const {login} = useContext(Context)
+    const [user, setUser] = useState({})
 
-    const send = async() => {
-        try{
-            const user = await axios.post("http://localhost:4000/user/login", {email:InputEmail.current.value, password:InputPassword.current.value})
-            const token = user.data.token
-            if(token){
-                localStorage.setItem("AltToken", token)
-                navigate("/")
-            }
-        }catch(err){
-            console.log(err.message)
-        }
+    const send = (e) => {
+        e.preventDefault()
+        login(user)
+    }
+
+    const handleChange = (e) => {
+        setUser({...user, [e.target.name]: e.target.value})
     }
 
     return(
-        <div className="container-login-register">
+        <form onSubmit={send} className="container-login-register">
             <h1>Login</h1>
             <div className="inputs" class="mb-3">
                 <div className="input-container">
                     <i class="bi bi-envelope-at-fill"></i>
-                    <input type="email" placeholder="Email" ref={InputEmail} class="form-control"></input>
+                    <input type="email" placeholder="Email" name="email" onChange={(e)=>handleChange(e)} class="form-control"></input>
                 </div>
                 <div className="input-container">
                     <i class="bi bi-person-fill-lock"></i>
-                    <input type="password" placeholder="Senha" ref={InputPassword} class="form-control"></input>
+                    <input type="password" placeholder="Senha" name="password" onChange={(e)=>handleChange(e)} class="form-control"></input>
                 </div>
                 <div className="informacao-add">
                     <p>Você não tem uma conta ?</p>
-                    <a href="/">Registrar</a>
+                    <Link to="/Register">Registrar</Link>
                 </div>
             </div>
-            <button type="submit" className="btn btn-primary" onClick={() => send()}>Entrar</button>
-        </div>
+            <button type="submit" className="btn btn-primary">Entrar</button>
+        </form>
     )
 }
 

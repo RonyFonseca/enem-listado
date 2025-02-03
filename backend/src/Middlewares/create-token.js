@@ -7,7 +7,7 @@ const createToken = async(user, req, res) => {
         email: user.email
     }, process.env.SECRET_JWT)
 
-    res.status(200).json({message:"Você está autenticado", token})
+    res.status(200).json({message:"Você está autenticado", token, name:user.name})
 }
 
 export default createToken

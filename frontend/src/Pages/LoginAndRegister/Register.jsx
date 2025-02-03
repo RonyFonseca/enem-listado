@@ -1,60 +1,48 @@
 import "./Index.css"
-import { useRef, useState } from "react"
-import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import {useState, useContext } from "react"
+import {Context} from "../../Context/UseContext.jsx"
 function Register(){
-    const InputName = useRef("")
-    const InputEmail = useRef("")
-    const InputPassword = useRef("")
-    const InputConfirmPassword = useRef("")
+    const [user, setUser] = useState({})
+    const {register} = useContext(Context)
 
-    const navigate = useNavigate()
-
-    const send = async() => {
-        if(InputPassword.current.value !== InputConfirmPassword.current.value){
-            console.log("As senhas não sõa iguais")
-            return
-        }
-
-        try{
-            const user = await axios.post("http://localhost:4000/user/register",{name:InputName.current.value,email:InputEmail.current.value, password:InputPassword.current.value, confirmPassword:InputConfirmPassword.current.value})
-            const token = user.data.token
-            if(token){
-                localStorage.setItem("AltToken", token)
-                navigate("/Home")
-            }
-        }catch(err){
-            console.log(err.message)
-        }
-
+    const send =(e) => {
+        e.preventDefault()
+        register(user)
+        
     }
+
+    const handleChange = (e) => {
+        setUser({...user, [e.target.name]:e.target.value})
+        console.log(user)
+    }
+
     return(
         <div className="container-login-register">
             <h1>Registre-se</h1>
-            <div className="inputs" class="mb-3">
+            <form onSubmit={send} className="inputs" class="mb-3">
                 <div className="input-container">
                     <i class="bi bi-person-fill"></i>
-                    <input type="text" placeholder="Nome" ref={InputName} class="form-control"></input>
+                    <input type="text" name="name" placeholder="Nome" class="form-control" onChange={(e) => handleChange(e)}></input>
                 </div>
                 <div className="input-container">
                     <i class="bi bi-envelope-at-fill"></i>
-                    <input type="email" placeholder="Email" ref={InputEmail} class="form-control"></input>
+                    <input type="email" name="email" placeholder="Email" class="form-control" onChange={(e) => handleChange(e)}></input>
                 </div>
                 <div className="input-container">
                     <i class="bi bi-person-fill-lock"></i>
-                    <input type="password" placeholder="Senha" ref={InputPassword} class="form-control"></input>
+                    <input type="password" name="password" placeholder="Senha" class="form-control" onChange={(e) => handleChange(e)}></input>
                 </div>
                 <div className="input-container">
                     <i class="bi bi-person-fill-lock"></i>
-                    <input type="password" placeholder="Confirmar Senha" ref={InputConfirmPassword} class="form-control"></input>
+                    <input type="password" name="confirmPassword" placeholder="Confirmar Senha" class="form-control" onChange={(e) => handleChange(e)}></input>
                 </div>
 
                 <div className="informacao-add">
                     <p>Você ja tem uma conta ?</p>
                     <a href="/Login">Login</a>
                 </div>
-            </div>
-            <button type="submit" className="btn btn-primary" onClick={() => send()}>Registrar</button>
+                <button type="submit" className="btn btn-primary">Registrar</button>
+            </form>
         </div>
     )
 }

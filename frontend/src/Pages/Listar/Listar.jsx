@@ -1,16 +1,18 @@
-import Header from "../../Components/Header/Header.jsx"
 import axios from "axios"
+import {useParams} from "react-router-dom"
 import { useEffect,useState } from "react"
 import "./Listar.css"
 function Listar () {
 
+    const {id} = useParams()
     const [provas, setProvas] = useState([])
 
     useEffect(() => {
         const allQuestoes = async() => {
-            const dataProvas = await axios.get("http://localhost:4000/prova/")
+            const dataProvas = await axios.get(`http://localhost:4000/prova/listing/${id}`)
 
-            setProvas(dataProvas.data.provas)
+            setProvas(dataProvas.data.prova.data)
+            // console.log(dataProvas.data.prova.data)
             // provas.map((e) => e.data.map((t) => t.questoes.map((q)=> console.log(q.questao))))
         }
 
@@ -20,8 +22,7 @@ function Listar () {
     
     return(
         <div>
-            <Header namePage="Listar" link1="/" nome1="Home" link2="" nome2="Minhas Provas"/>
-            {provas.map((e, index)=>(
+            {/* {provas.map((e, index)=>(
                 <div key={index} className="prova">
                     {e.data.map((q, index)=> (
                     <div key={index} className="secao">
@@ -33,6 +34,22 @@ function Listar () {
                         </ol>
                     </div>
                     ))}
+                </div>
+            ))} */}
+            {provas.map((e)=> (
+                <div className="prova">
+                    <h1>{e.titulo}</h1>
+                    <div className="questoes">
+                        {e.questoes.map((e, index)=> (
+                            <div>
+                                <div>
+                                    <h2>Questão:{index+1}</h2>
+                                    <input  type="checkbox"/>
+                                </div>
+                                <p>{e.questao}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             ))}
         </div>

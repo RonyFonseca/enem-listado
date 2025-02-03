@@ -1,4 +1,3 @@
-import Header from "../../Components/Header/Header.jsx"
 import { useRef, useState } from "react"
 import { useNavigate} from "react-router-dom"
 import axios from "axios"
@@ -112,7 +111,6 @@ function Create(){
 
     return(
         <div>
-            <Header namePage="Cria Prova" link1="/" nome1="Home" link2="" nome2="Minhas Provas"/>
             <div className="container-create">
                 <h2>Criando prova:</h2>
                 <div className="input-container">

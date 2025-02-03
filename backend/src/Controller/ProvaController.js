@@ -47,6 +47,12 @@ class ProvaController{
         const provas = await Prova.find()
         res.status(200).json({provas})
     }
+
+    static async listing(req, res){
+        const id = req.params.id
+        const prova = await Prova.findById({_id:id})
+        res.status(200).json({prova})
+    }
 }
 
 export default ProvaController

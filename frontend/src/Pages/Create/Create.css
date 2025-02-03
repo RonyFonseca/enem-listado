@@ -3,6 +3,10 @@
     margin: 100px auto;
 }
 
+textarea {
+    white-space: pre-wrap;
+}
+
 .container-login-register > h2,#buttons {
     margin-left: -10px;
 }
