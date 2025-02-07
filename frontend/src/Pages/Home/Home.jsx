@@ -1,25 +1,23 @@
 import { useEffect, useState, useContext } from "react"
 import {Link} from "react-router-dom"
-import axios from "axios"
 import { format } from 'date-fns'
 import {Context} from "../../Context/UseContext.jsx"
+import {ContextProva} from "../../Context/ProvaContext.jsx"
+import api from "../../Utils/api.js"
 
 import "./Home.css"
 function Home(){
 
     const [provas, setProvas] = useState([])
+    const [strProcura, setStrProcura] = useState("")
 
-    const {userLogado} = useContext(Context)
+    const {getAllProva} = useContext(ContextProva)
 
     useEffect(() => {
         const provas = async() => {
-            userLogado()
-            const dataProvas = await axios.get("http://localhost:4000/prova/")
-
-            const provasArr = dataProvas.data.provas
-            setProvas(provasArr)
-            // const data = new Date("2025-01-23T22:38:02.170Z");
-            // console.log(format(data, 'dd/MM/yyyy HH:mm:ss'));
+            // const data = await getAllProva()
+            const data = await api.get("/prova/")
+            setProvas(data.data.provas)
         }
         provas()
     },[])
@@ -34,22 +32,56 @@ function Home(){
         return (<spam>{format(data,'dd/MM/yyyy')}</spam>)
     }
 
+    async function handleChange(e){
+        const data = await api.get("/prova/", {params:{titulo:e.target.value}})
+        if(data.data.provas.length==0){
+            setProvas([])
+        }
+        setProvas(data.data.provas)
+    }
+
+    async function addopc(e){
+        const data = await api.get("/prova/", {params:{titulo:e.target.name}})
+        if(data.data.provas.length==0){
+            setProvas([])
+        }
+        setProvas(data.data.provas)
+    }
+
+    
+
     return(
-        <div>
-            {provas.map((e, index)=>(
-                <div className="card-prova" key={e._id}>
-                    <p className="data-lancado"><i class="bi bi-calendar2-check-fill"></i> Dia do post: {dataAtualizacao(e.createdAt)}</p>
-                    <h2 className="card-titulo-prova">[{index + 1}]-{e.titulo}</h2>
-                    <div className="card-links-prova">
-                        <Link to={`/Listar/${e._id}`} className="card-link-listar" class="btn btn-primary"><i class="bi bi-clipboard-check-fill"></i> Listar</Link>
-                        <a href="" className="card-link-destalhe" class="btn btn-warning"><i class="bi bi-eye-fill"></i> Detalhes</a>
-                    </div>
-                    <div className="botton-card">
-                        <p className="data-ultilizacao"><i class="bi bi-cloud-arrow-up-fill"></i> Última atualização: {dataNova(e.updatedAt)}</p>
-                        <p className="user-card-bottom"><i class="bi bi-person-fill"></i> @{e.dono_da_prova.name}</p>
+        <div id="home-provas">
+            <div>
+                <div id="menu-home-busca">
+                    <div id="busca">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Procurar" class="form-control" onChange={handleChange}/>
+                        <button type="button" class="btn btn-success"><i class="bi bi-search"></i></button> 
                     </div>
                 </div>
-            ))}
+                <label className="label-aviso">Procure pelas provas de maneira mais rápida, digite algumas palavras chaves Ex:"Enem" ou clique nos atalhos logo a baixo.</label>
+                <div id="helpers">
+                    <button onClick={addopc} name="Enem">Enem</button>
+                    <button onClick={addopc} name="2020">2020</button>
+                    <button onClick={addopc} name="Prova">Prova</button>
+                </div>
+            </div>
+            <div id="home-prova-loop">
+                <div className="jumpscare">{provas.length == 0 ? (<span>Não achei nada</span>):(<></>)}</div>
+                {provas.map((e, index)=>(
+                    <div className="card-prova" key={e._id}>
+                        <h3 className="card-titulo-prova">{e.titulo}</h3>
+                        <div>
+                            <p className="data-lancado"><i class="bi bi-calendar2-check-fill"></i> Dia do post: {dataAtualizacao(e.createdAt)}</p>
+                            <div className="card-links-prova">
+                                <Link to={`/Listar/${e._id}`} className="card-link-listar" class="btn btn-primary"><i class="bi bi-clipboard-check-fill"></i> Listar</Link>
+                                <Link to={`/Detalhes/${e._id}`} className="card-link-destalhe" class="btn btn-warning"><i class="bi bi-eye-fill"></i> Detalhes</Link>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     )
 }

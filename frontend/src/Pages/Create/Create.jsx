@@ -1,6 +1,7 @@
-import { useRef, useState } from "react"
+import { useRef, useState, useContext, useEffect } from "react"
 import { useNavigate} from "react-router-dom"
-import axios from "axios"
+import { ContextProva } from "../../Context/ProvaContext"
+import {Context} from "../../Context/UseContext.jsx"
 import "./Create.css"
 function Create(){
 
@@ -8,40 +9,21 @@ function Create(){
     const InputDescricao = useRef("")
     const InputTituloSecao = useRef("")
 
-    const navigate = useNavigate("")
+    const {createProva} = useContext(ContextProva)
+
+    const navigate = useNavigate()
+    
 
     const [secao, setSecao] = useState([])
     const [text, setText] = useState("")
 
-
-    // useEffect(() => {
-    //     const exibirAsSecoes = () => {
-    //         const secoes = [
-    //             {
-    //                 titulo: "Matemática",
-    //                 questoes: []
-    //             },
-    //             {
-    //                 titulo: "Português",
-    //                 questoes: []
-    //             }
-    //         ]
-    //         setSecao(secoes)
-    //     }
-    //     exibirAsSecoes()
-    // },[])
-
     const send = async() => {
-        console.log(InputTitulo.current.value)
-        console.log(InputDescricao.current.value)
-        const token = localStorage.getItem("AltToken")
-        const prova = await axios.post("http://localhost:4000/prova/create", {data:secao, titulo: InputTitulo.current.value, descricao:InputDescricao.current.value}, {headers: {Authorization: `Bearer ${token}`},})
-        try {
-            console.log(prova.data)
-        }catch(err){
-            console.log(err.message)
+        const prova = {
+            data:secao, 
+            titulo:InputTitulo.current.value,
+            descricao:InputDescricao.current.value,
         }
-        navigate("/")
+        await createProva(prova)
     }
 
     const mostrarInput = () => {
@@ -73,6 +55,11 @@ function Create(){
         setSecao(novasSecoes)
     }
 
+    const limpar = () => {
+        InputTitulo.current.value = ""
+        InputDescricao.current.value = ""
+    }
+
 
     const atualizarText = (e, index) => {
         setText({...text,[index]:e.target.value})
@@ -96,22 +83,21 @@ function Create(){
     }
 
     const mostrarAddqts = (indice) => {
-        console.log(indice)
-        const body = document.getElementsByClassName("container-secao-escolhida-body")
+        const body = document.getElementsByClassName("container-text-area-secao")
         const button = document.getElementsByClassName("button-body-qts")
 
-        if(body[indice].style.display=="block"){
+        if(body[indice].style.display=="flex"){
             body[indice].style.display="none"
-            button[indice].innerHTML = '<i class="bi bi-arrow-up-square-fill"></i>'
-        }else {
-            body[indice].style.display="block"
             button[indice].innerHTML = '<i class="bi bi-arrow-down-square-fill"></i>'
+        }else {
+            body[indice].style.display="flex"
+            button[indice].innerHTML = '<i class="bi bi-arrow-up-square-fill"></i>'
         }
     }
 
     return(
-        <div>
-            <div className="container-create">
+        <div id="container-create">
+            <div>
                 <h2>Criando prova:</h2>
                 <div className="input-container">
                     <i class="bi bi-stickies-fill"></i>
@@ -121,55 +107,46 @@ function Create(){
                     <i class="bi bi-clipboard2-fill"></i>
                     <input type="text" class="form-control" placeholder="Descrição" ref={InputDescricao}></input>
                 </div>
+                <label className="label-aviso">Quando adicionar todas as informações você deve criar, sua prova vai ser salva e você vai ser redirecionado para a home.</label>
                 <div id="buttons">
                     <button type="submit" class="btn btn-success" onClick={()=> send()}><i class="bi bi-check2-square"></i> Criar</button>
-                    <button type="submit" class="btn btn-danger" onClick={""}><i class="bi bi-backspace-fill"></i> limpar</button>
+                    <button type="submit" class="btn btn-danger" onClick={limpar}><i class="bi bi-backspace-fill"></i> limpar</button>
                 </div>
             </div>
 
 
-            <div className="container-login-register">
-                <div className="secao-header">
+            <div className="container-criar-secao">
+                <div className="secao">
                     <h2>Seções:</h2>
-                    <div>
-                        <h2>Adicionar:</h2>
-                        <button type="button" id="botao" class="btn btn-success" onClick={mostrarInput}>+</button>
-                    </div>
-                </div>
-                <div className="secao-body">
-                    {secao.map((e, index) => (
-                        <div className="secao-check" key={index}>
-                            <label>{e.titulo}</label>
-                        </div>
-                    ))}
-                </div>
-                
-
-                <div id="add-titulo">
-                    <div id="add-titulo2">
-                        <input type="text" placeholder="Adicione um titulo" ref={InputTituloSecao}/>
+                    <label className="label-aviso">Aqui é um lugar para você adicionar grupos de questoes Ex: Matemática</label>
+                    <div className="secao-buttons">
+                        <input type="text" class="form-control" placeholder="Adicione um titulo" ref={InputTituloSecao}/>
                         <button type="button" class="btn btn-success" onClick={salvarTitulo}>Salvar</button>
                     </div>
                 </div>
             </div>
 
-            <div className="container-create" id="secao-op-escolhida">
+            <div className="container-questoes-main">
                 {secao.map((e, indexT)=>(
-                    <div className="container-secao-escolhida" key={indexT}>
-                        <div className="container-secao-escolhida-header">
+                    <div className="container-gerar-questoes" key={indexT}>
+                        <div className="container-questoes-header">
                             <h1>{e.titulo}</h1>
-                            <button onClick={() => mostrarAddqts(indexT)} className="button-body-qts"><i class="bi bi-arrow-down-square-fill"></i></button>
+                            <div>
+                                <button><i class="bi bi-trash3-fill"></i></button>
+                                <button onClick={() => mostrarAddqts(indexT)} className="button-body-qts"><i class="bi bi-arrow-up-square-fill"></i></button>
+                            </div>
                         </div>
-                        <div className="container-secao-escolhida-body">
+                        <div className="container-text-area-secao" style={{display:"flex"}}>
                             <textarea value={text[indexT]}placeholder="Digite a quesão" onChange={(e) => atualizarText(e, indexT)}></textarea>
-                            <button class="btn btn-success" onClick={() => salvarQts(indexT)}>Salvar</button>
+                            <button class="btn btn-success" onClick={() => salvarQts(indexT)}>Criar questão</button>
                         </div>
-                        <div className="container-secao-escolhida-questao">
+                        <div className="container-exibindo-questao">
                             {e.questoes.map((qts, index)=>(
                                 <div key={index}>
                                     <div className="container-questao">
                                         <div>
-                                            <h1>Questão {index+1}</h1>
+                                            <h3>Questão {index+1}</h3>
+                                            <button><i class="bi bi-trash3-fill"></i></button>
                                         </div>
                                         <div className="questao">
                                             <p className="teste">{qts.questao}</p>

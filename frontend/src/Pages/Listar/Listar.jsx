@@ -36,12 +36,12 @@ function Listar () {
                     ))}
                 </div>
             ))} */}
-            {provas.map((e)=> (
-                <div className="prova">
+            {provas.map((e, index)=> (
+                <div className="prova" key={index}>
                     <h1>{e.titulo}</h1>
                     <div className="questoes">
                         {e.questoes.map((e, index)=> (
-                            <div>
+                            <div key={index}>
                                 <div>
                                     <h2>Questão:{index+1}</h2>
                                     <input  type="checkbox"/>

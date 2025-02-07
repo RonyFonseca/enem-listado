@@ -1,5 +1,5 @@
 import api from "../Utils/api"
-import setToken from "../Utils/setToken.js"
+import setToken from "./setToken.js"
 import {useNavigate} from "react-router-dom"
 import { useState } from "react"
 import useflashMessage from "./flashMessage.js"
@@ -57,6 +57,7 @@ function useAuth(){
 
     function logout() {
         localStorage.removeItem("AltToken")
+        localStorage.removeItem("UserId")
         setLogado(false)
         navigate("/Login")
         let msg = "Usuário deslogado"

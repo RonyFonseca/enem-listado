@@ -1,0 +1,41 @@
+section {
+    display: flex;      
+    gap: 15px;
+    flex-direction: column;
+    margin: 50px;
+    padding: 0px 10px 10px 10px;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    width:500px;
+    border-radius: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width:478px;
+    gap: 5px;   
+}
+
+label {
+    font-size: 14px;
+}
+
+#informacoes {
+    margin-left: 10px;
+}
+
+#header-detalhes {
+    margin-bottom: 10px;
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+}
+
+#header-detalhes > h1{
+    font-size: 70px;
+    margin: 0;
+}
+
+#header-detalhes > p {
+    margin: 0;
+}
